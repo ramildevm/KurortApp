@@ -29,7 +29,7 @@
             <StackPanel >
                 <Label Content="Добро пожаловать!" Style="{StaticResource Lbl13}" Margin="0,5,0,5"/>
                 <Label Content="Логин" Style="{StaticResource LblLeft}" />
-                <TextBox FontFamily="Comic Sans MS" x:Name="txtLogin" Width="171" Height="25" VerticalContentAlignment="Center" Background="White">
+                <TextBox FontFamily="Comic Sans MS" Padding="5,0,0,0" x:Name="txtLogin" Width="171" Height="25" VerticalContentAlignment="Center" Background="White">
                     <TextBox.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="5"/>
@@ -44,13 +44,14 @@
                     <TextBox FontFamily="Comic Sans MS" x:Name="MyTextBox" BorderThickness="0" Background="Transparent" Padding="5,0,0,0" VerticalContentAlignment="Center" Text="{Binding Password, Mode=TwoWay, ElementName=txtPassword}"/>
                 </Border>
                 <CheckBox x:Name="ShowPasswordCharsCheckBox" FontFamily="Comic Sans MS" Margin="15,10,0,0" Content="Показать пароль" Checked="ShowPasswordCharsCheckBox_Checked" Unchecked="ShowPasswordCharsCheckBox_Unchecked" />
-                <Button Content="Войти" Width="171" Height="36" Cursor="Hand" FontFamily="Comic Sans MS" FontWeight="Bold" Background="White" Margin="0,17,0,15" BorderThickness="0" Click="ButtonLogin_Click">
+                <Button x:Name="loginBtn" IsEnabled="False" Content="Войти" Width="171" Height="36" Cursor="Hand" FontFamily="Comic Sans MS" FontWeight="Bold" Background="White" Margin="0,17,0,15" BorderThickness="0" Click="ButtonLogin_Click">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="10"/>
                         </Style>
                     </Button.Resources>
                 </Button>
+                <TextBlock x:Name="timerTxt" />
             </StackPanel>
         </Border>
     </StackPanel>

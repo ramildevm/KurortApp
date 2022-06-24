@@ -53,11 +53,14 @@ namespace KurortApp
             if(captchaCheckTxt.Text == captchaBox.Text)
             {
                 SessionContext.Attempts = 1;
+                SessionContext.SetTimer();
                 this.Close();
             }
             else
             {
                 MessageBox.Show("Текст введен неправильно.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                SessionContext.SetTimer(10);
+                this.Close();
             }
         }
     }

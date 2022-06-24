@@ -20,10 +20,27 @@ namespace KurortApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        public System.Windows.Threading.DispatcherTimer sessionTimer1;
+        TimeSpan _time;
+
+        System.Windows.Threading.DispatcherTimer logInAccessTimer = new System.Windows.Threading.DispatcherTimer();
         public MainWindow()
         {
             InitializeComponent();
+            _time = TimeSpan.FromSeconds(120);
+            
+            logInAccessTimer.Interval = SessionContext.TimerInterval;
+            logInAccessTimer.Tick += LogInAccessTimer_Tick;
+            logInAccessTimer.Start();
         }
+
+        private void LogInAccessTimer_Tick(object sender, EventArgs e)
+        {
+            loginBtn.IsEnabled = true;
+            SessionContext.SetTimer();
+            logInAccessTimer.Stop();
+        }
+
         private void ShowPasswordCharsCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             txtPassword.Visibility = System.Windows.Visibility.Collapsed;
@@ -40,6 +57,7 @@ namespace KurortApp
             
             txtPassword.Focus();
         }
+
         private void ButtonLogin_Click(object sender, RoutedEventArgs e)
         {
             if(SessionContext.Attempts >= 2)
@@ -47,12 +65,18 @@ namespace KurortApp
                 var capthaWindow = new CaptchaWindow();
                 this.Hide();
                 capthaWindow.ShowDialog();
+                loginBtn.IsEnabled = false;
+                logInAccessTimer.Interval = SessionContext.TimerInterval;
+                logInAccessTimer.Start();
                 this.Show();
                 return;
             }
             string result = LoginMethod(txtLogin.Text, txtPassword.Password);
             if (result == $"Добро пожаловать, {txtLogin.Text}!")
             {
+                var SellerWindow = new SellerMainWindow();
+                this.Close();
+                SellerWindow.ShowDialog();
                 //using (var db = new Pharmacy_ValeriankaEntities())
                 //{
                 //    Users user = (from u in db.Users where u.UserLogin == txtLogin.Text select u).FirstOrDefault();
