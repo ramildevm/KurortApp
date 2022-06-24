@@ -18,7 +18,7 @@ namespace KurortApp
         public static void SetTimer(int time = 0)
         {
             if (time == 15)
-                TimerInterval = TimeSpan.FromSeconds(15);
+                TimerInterval = TimeSpan.FromMinutes(15);
             else if (time == 10)
                 TimerInterval = TimeSpan.FromSeconds(10);
             else

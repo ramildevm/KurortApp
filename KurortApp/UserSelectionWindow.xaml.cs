@@ -15,39 +15,25 @@ using System.Windows.Shapes;
 namespace KurortApp
 {
     /// <summary>
-    /// Логика взаимодействия для SellerMainWindow.xaml
+    /// Логика взаимодействия для UserSelectionWindow.xaml
     /// </summary>
-    public partial class SellerMainWindow : Window
+    public partial class UserSelectionWindow : Window
     {
-        AddOrderWindow addOrderWindow;
-        System.Windows.Threading.DispatcherTimer sessionTimer;
-        TimeSpan _time;
-        public SellerMainWindow()
+        public UserSelectionWindow()
         {
             InitializeComponent();
-            addOrderWindow = new AddOrderWindow();
-            _time = SessionContext.CurrentTime;
-            sessionTimer = new System.Windows.Threading.DispatcherTimer(new TimeSpan(0, 0, 1), System.Windows.Threading.DispatcherPriority.Normal, delegate
-            {
-                _time = SessionContext.CurrentTime;
-                timerTxt.Text = _time.ToString("c");
-                addOrderWindow.timerTxt.Text = _time.ToString("c");
-                if (_time == TimeSpan.Zero)
-                {
-                    sessionTimer.Stop();
-                }
-            }, Application.Current.Dispatcher);
-            sessionTimer.Start();
-            SessionContext.CurrentTime = TimeSpan.FromMinutes(150);
-            App.sessionTimer.Start();
-            LoadOrders();
+            LoadUsers();
         }
-
-        private void LoadOrders()
+        private void ButtonBackClick(object sender, RoutedEventArgs e)
+        {
+            SessionContext.SetDefaults();
+            this.Close();
+        }
+        private void LoadUsers()
         {
             using (var db = new KurortDBEntities())
             {
-                foreach (var order in db.Orders)
+                foreach(var order in db.Orders)
                 {
                     var mainBorder = new Border();
                     var gridPanel = new Grid();
@@ -77,7 +63,7 @@ namespace KurortApp
                     int priceText = 0;
                     foreach (var ser in order.Services.Split(','))
                     {
-                        priceText += (from s in db.Services where s.Id.ToString()==ser select s.Price).FirstOrDefault();
+                        priceText += db.Services.Where(x=>x.Id==Convert.ToInt32(ser)).Select(x => x.Price).FirstOrDefault();
                     }
                     price.Content += priceText.ToString();
                     //добавление
@@ -99,28 +85,6 @@ namespace KurortApp
                     contentPanel.Children.Add(mainBorder);
                 }
             }
-        }
-
-        private void ButtonOrder_Click(object sender, RoutedEventArgs e)
-        {
-            this.Hide();
-            addOrderWindow.ShowDialog();
-            this.Show();
-        }
-        private void AddBtn_MouseLeave(object sender, MouseEventArgs e)
-        {
-            (sender as Border).Background = new BrushConverter().ConvertFrom("#498C51") as Brush;
-        }
-
-        private void AddBtn_MouseEnter(object sender, MouseEventArgs e)
-        {
-            (sender as Border).Background = new BrushConverter().ConvertFrom("#DD498C51") as Brush;
-        }
-
-        private void ButtonBackClick(object sender, RoutedEventArgs e)
-        {
-            SessionContext.SetDefaults();
-            this.Close();
         }
     }
 }
