@@ -26,9 +26,9 @@ namespace KurortApp
         }
     
         public virtual DbSet<Barcodes> Barcodes { get; set; }
+        public virtual DbSet<Clients> Clients { get; set; }
         public virtual DbSet<Orders> Orders { get; set; }
         public virtual DbSet<Services> Services { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<Clients> Clients { get; set; }
     }
 }

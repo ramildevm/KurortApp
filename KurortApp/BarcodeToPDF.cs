@@ -38,11 +38,14 @@ namespace KurortApp
                 {
                     encoder.Save(stream);
                 }
+                return dlg.FileName;
             }
-            return dlg.FileName;
+            return "";
         }
         public static string SaveImageAsPDF(string filePAth, string code)
         {
+            if (filePAth == "")
+                return "Ошибка";
             var converter = new GroupDocs.Conversion.Converter(filePAth);
             // set the convert options for PDF format
             var convertOptions = converter.GetPossibleConversions()["pdf"].ConvertOptions;

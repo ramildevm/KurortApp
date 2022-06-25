@@ -43,7 +43,7 @@
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Style="{StaticResource closeBtnStyle}" Cursor="Hand" Click="ButtonBackClick" Content="«Приэльбрусье»" FontFamily="Rockwell" FontSize="24" VerticalAlignment="Center" Foreground="White" FontWeight="Bold" Margin="10,0,0,0">
+            <Button Grid.Column="0" Style="{StaticResource closeBtnStyle}" Cursor="Hand" Click="ButtonBackClick" Content="«Приэльбрусье»" FontFamily="Comic Sans MS" FontSize="24" VerticalAlignment="Center" Foreground="White" FontWeight="Bold" Margin="10,0,0,0">
                 <Button.ToolTip>
                     <ToolTip>
                         Выход из аккаунта
@@ -64,15 +64,11 @@
                         <Setter Property="Foreground" Value="White" />
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="FontFamily" Value="Comic Sans MS" />
                         <Setter Property="HorizontalAlignment" Value="Center" />
                     </Style>
                 </Grid.Resources>
-                <!--
-                <Button Grid.Column="0"  Cursor="Hand" >
-                    <TextBlock x:Name="txtCatalog" TextDecorations="Underline" Text="Каталог"  />
-                </Button>
-                -->
-                <Button Content="Принять заказ" Visibility="Hidden" Cursor="Hand"/>
+                <Button x:Name="acceptEquipmentBtn" Content="Принять оборудование" Visibility="Hidden" Cursor="Hand" Click="ButtonAcceptEquipment_Click"/>
             </Grid>
             <DockPanel Grid.Column="2">
                 <Label DockPanel.Dock="Top" Content="Текущий сеанс:" FontSize="14" FontFamily="Comic Sans MS" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -92,7 +88,7 @@
                     </Style>
                 </TextBox.Resources>
             </TextBox>
-            <Button Grid.Column="1" Content="Найти" Width="100" Height="25"  FontWeight="Bold" Foreground="White" Margin="-20,0,10,0" BorderThickness="1" Background="#498C51" >
+            <Button Grid.Column="1" FontFamily="Comic Sans MS" Content="Найти" Width="100" Height="25" Click="ButtonSearch_Click" FontWeight="Bold" Foreground="White" Margin="-20,0,10,0" BorderThickness="1" Background="#498C51" >
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="5"/>
@@ -114,6 +110,13 @@
                         <Setter Property="FontSize" Value="12" />
                         <Setter Property="FontWeight" Value="Bold" />
                     </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Margin" Value="5,5,5,0" />
+                        <Setter Property="FontFamily" Value="Comic Sans MS" />
+                        <Setter Property="FontSize" Value="12" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="TextWrapping" Value="WrapWithOverflow" />
+                    </Style>
                     <!--
                     <Style x:Key="RoundedButtonStyle" TargetType="{x:Type Button}">
                         <Setter Property="Template">
@@ -131,7 +134,7 @@
                 <!--content here-->
             </StackPanel>
         </ScrollViewer>
-        <Button DockPanel.Dock="Bottom" x:Name="goOrderBtn" Click="ButtonOrder_Click" BorderThickness="0" Cursor="Hand"  VerticalAlignment="Bottom"  Height="37" Width="131" FontWeight="Bold" Foreground="White" Content="Добавить заказ" Background="#498C51" HorizontalAlignment="Right" Margin="0,-60,25,15">
+        <Button DockPanel.Dock="Bottom" FontFamily="Comic Sans MS" x:Name="goOrderBtn" Click="ButtonOrder_Click" BorderThickness="0" Cursor="Hand"  VerticalAlignment="Bottom"  Height="37" Width="131" FontWeight="Bold" Foreground="White" Content="Добавить заказ" Background="#498C51" HorizontalAlignment="Right" Margin="0,-60,25,15">
             <Button.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="10"/>

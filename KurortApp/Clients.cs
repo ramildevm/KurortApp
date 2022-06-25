@@ -15,6 +15,7 @@ namespace KurortApp
     public partial class Clients
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
         public string Passport { get; set; }
         public System.DateTime Birthday { get; set; }
         public string Address { get; set; }

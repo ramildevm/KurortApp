@@ -15,60 +15,60 @@ using System.Windows.Shapes;
 namespace KurortApp
 {
     /// <summary>
-    /// Логика взаимодействия для UserSelectionWindow.xaml
+    /// Логика взаимодействия для ServiceSelectionWindow.xaml
     /// </summary>
-    public partial class UserSelectionWindow : Window
+    public partial class ServiceSelectionWindow : Window
     {
-        public UserSelectionWindow()
+        public ServiceSelectionWindow()
         {
             InitializeComponent();
-            LoadUsers();
+            LoadServices();
         }
         private void ButtonBackClick(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-        private void LoadUsers(string substring="")
+        private void LoadServices(string substring = "")
         {
-            IEnumerable<Users> UserList = null;
+            IEnumerable<Services> ServiceList = null;
             using (var db = new KurortDBEntities())
             {
-                UserList = db.Users.Where(user => user.Role == "Клиент").ToList<Users>();
-                if (substring.Replace(" ", "") != "")
-                    UserList = (from u in UserList
-                                where u.FIO.Contains($"{substring}")
-                                select u).ToList();
-                foreach (var user in UserList)
+                ServiceList = (from d in db.Services select d);
+                if (substring.Replace(" ", "") == "")
+                    ServiceList = (from s in ServiceList
+                                where s.Name.Contains($"{substring}")
+                                select s).ToList();
+                foreach (var service in ServiceList)
                 {
                     var mainBorder = new Border();
                     var gridPanel = new Grid();
                     gridPanel.ColumnDefinitions.Add(new ColumnDefinition());
                     gridPanel.ColumnDefinitions.Add(new ColumnDefinition());
                     var sp1 = new StackPanel() { Orientation = Orientation.Vertical };
-                    var FIO = new Label() { Content = "ФИО: " };
-                    var date = new Label() { Content = "Дата рождения: " };
-                    var passport = new Label() { Content = "Пасспортные данные: " };
-                    var address = new Label() { Content = "Адрес: " };
+                    var Name = new Label() { Content = "Навзание: " };
+                    var kod = new Label() { Content = "Код услуги: " };
+                    var price = new Label() { Content = "Цена: " };
 
                     var sp2 = new StackPanel() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
-                    var addBtn = new Button() { Width = 100, Height = 30, Content = "Выбрать", Foreground = Brushes.White, Margin = new Thickness(0, 0, 10, 0), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Cursor = Cursors.Hand };
+                    var addBtn = new Button() { Width = 100, Height = 30, Content = "Добавить", Foreground = Brushes.White, Margin = new Thickness(0, 0, 10, 0), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Cursor = Cursors.Hand };
+                    if (OrderContext.ServicesSet.Where(x => x.Id == service.Id).FirstOrDefault() != null)
+                    {
+                        addBtn.IsEnabled = false;
+                        addBtn.Content = "Добавлено";
+                    }
                     addBtn.Style = (Style)contentPanel.Resources["RoundedButtonStyle"];
-                    addBtn.Tag = user;
+                    addBtn.Tag = service;
                     addBtn.Click += AddBtn_Click;
                     //наполнение
-                    var client = db.Clients.Where(c => c.UserId == user.Id).FirstOrDefault();
-                    FIO.Content += user.FIO;
-                    date.Content += client.Birthday.ToShortDateString();
-                    passport.Content += client.Passport;
-                    address.Content += client.Address;
-
+                    Name.Content += service.Name;
+                    kod.Content += service.Kod_uslugi;
+                    price.Content += service.Price.ToString() + " p.";
                     //добавление
                     Grid.SetColumn(sp1, 0);
                     Grid.SetColumn(sp2, 1);
-                    sp1.Children.Add(FIO);
-                    sp1.Children.Add(date);
-                    sp1.Children.Add(passport);
-                    sp1.Children.Add(address);
+                    sp1.Children.Add(Name);
+                    sp1.Children.Add(kod);
+                    sp1.Children.Add(price);
                     gridPanel.Children.Add(sp1);
 
                     sp2.Children.Add(addBtn);
@@ -82,12 +82,17 @@ namespace KurortApp
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
         {
             contentPanel.Children.Clear();
-            LoadUsers(searchTxt.Text);
+            LoadServices(searchTxt.Text);
         }
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
-            OrderContext.SelectedUser = (sender as Button).Tag as Users;
-            this.Close();
+            var service = ((sender as Button).Tag as Services);
+            int serviceId = service.Id;
+            if (OrderContext.ServicesSet.Where(x=>x.Id == serviceId).FirstOrDefault()==null)
+                OrderContext.ServicesSet.Add((sender as Button).Tag as Services);
+            (sender as Button).Content = "Добавлено";
+            (sender as Button).IsEnabled = false;
+            
         }
 
         private void AddBtn_MouseLeave(object sender, MouseEventArgs e)
@@ -98,14 +103,6 @@ namespace KurortApp
         private void AddBtn_MouseEnter(object sender, MouseEventArgs e)
         {
             (sender as Border).Background = new BrushConverter().ConvertFrom("#5BAD65") as Brush;
-        }
-
-        private void ButtonAddUserClick(object sender, RoutedEventArgs e)
-        {
-            var auw = new AddUserWindow();
-            this.Hide();
-            auw.ShowDialog();
-            this.ShowDialog();
         }
     }
 }

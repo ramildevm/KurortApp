@@ -51,7 +51,6 @@
                         </Style>
                     </Button.Resources>
                 </Button>
-                <TextBlock x:Name="timerTxt" />
             </StackPanel>
         </Border>
     </StackPanel>

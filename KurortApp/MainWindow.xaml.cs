@@ -27,8 +27,17 @@ namespace KurortApp
         public MainWindow()
         {
             InitializeComponent();
+            txtLogin.Text = "Ivanov@namecomp.ru";
+            txtPassword.Password = "2L6KZG";
+
+            txtLogin.Text = "mironov@namecomp.ru";
+            txtPassword.Password = "YOyhfR";
+
+            //txtLogin.Text = "fedorov@namecomp.ru";
+            //txtPassword.Password = "8ntwUp";
+
             _time = TimeSpan.FromSeconds(120);
-            
+
             logInAccessTimer.Interval = SessionContext.TimerInterval;
             logInAccessTimer.Tick += LogInAccessTimer_Tick;
             logInAccessTimer.Start();
@@ -54,13 +63,13 @@ namespace KurortApp
         {
             txtPassword.Visibility = System.Windows.Visibility.Visible;
             borderShowPassword.Visibility = System.Windows.Visibility.Collapsed;
-            
+
             txtPassword.Focus();
         }
 
         private void ButtonLogin_Click(object sender, RoutedEventArgs e)
         {
-            if(SessionContext.Attempts >= 2)
+            if (SessionContext.Attempts >= 2)
             {
                 var capthaWindow = new CaptchaWindow();
                 this.Hide();
@@ -74,36 +83,23 @@ namespace KurortApp
             string result = LoginMethod(txtLogin.Text, txtPassword.Password);
             if (result == $"Добро пожаловать, {txtLogin.Text}!")
             {
-                var SellerWindow = new SellerMainWindow();
-                this.Close();
-                SellerWindow.ShowDialog();
-                //using (var db = new Pharmacy_ValeriankaEntities())
-                //{
-                //    Users user = (from u in db.Users where u.UserLogin == txtLogin.Text select u).FirstOrDefault();
-                //    if (user.UserRole == "User")
-                //    {
-                //        SystemContext.typeWindow = "Каталог";
-                //        ClientMainWindow cmw = new ClientMainWindow();
-                //        this.Close();
-                //        cmw.ShowDialog();
-                //    }
-                //    else if (user.UserRole == "Employee")
-                //    {
-                //        EmployeeMainWindow emw = new EmployeeMainWindow();
-                //        this.Close();
-                //        emw.ShowDialog();
-                //    }
-                //    else if (user.UserRole == "Admin")
-                //    {
-                //        AdminWindow aw = new AdminWindow();
-                //        this.Close();
-                //        aw.ShowDialog();
-                //    }
-                //    else
-                //    {
-                //        MessageBox.Show("Произошла ошибка с определением роли пользователя", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-                //    }
-                //}
+                if (SessionContext.CurrentUser.Role == "Продавец" || SessionContext.CurrentUser.Role == "Старший смены")
+                {
+                    var SellerWindow = new SellerMainWindow();
+                    this.Hide();
+                    SellerWindow.ShowDialog();
+                    this.Show();
+                }
+                else if (SessionContext.CurrentUser.Role == "Администратор")
+                {
+
+                }
+                else
+                {
+                    MessageBox.Show("Произошла ошибка с определением роли пользователя", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                txtLogin.Text = "";
+                txtPassword.Password = "";
             }
             else
             {
@@ -114,22 +110,23 @@ namespace KurortApp
 
         private string LoginMethod(string login, string password)
         {
-            if (login != "admin" && password != "admin")
-                return "Error";
-            //if (login.Length == 0 || password.Length == 0)
-            //    return "Не все поля заполнены!";
-            //using (var db = new Pharmacy_ValeriankaEntities())
-            //{
-            //    Users user = (from u in db.Users where u.UserLogin == login select u).FirstOrDefault();
-            //    if (user == null)
-            //        return "Пользователя с таким логином не существует!";
-            //    if (user.UserPassword != password)
-            //        return "Неверный пароль!";
-            //    if (user.UserRole == "User")
-            //        SystemContext.Client = (from c in db.Client where c.UserID == user.UserID select c).FirstOrDefault();
-            //    SystemContext.User = user;
-            //}
+            if (login.Length == 0 || password.Length == 0)
+                return "Не все поля заполнены!";
+            using (var db = new KurortDBEntities())
+            {
+                Users user = (from u in db.Users where u.Login == login select u).FirstOrDefault();
+                if (user == null)
+                    return "Пользователя с таким логином не существует!";
+                if (user.Password != password)
+                    return "Неверный пароль!";
+                SessionContext.CurrentUser = user;
+            }
             return $"Добро пожаловать, {login}!";
+        }
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
         }
     }
 }
