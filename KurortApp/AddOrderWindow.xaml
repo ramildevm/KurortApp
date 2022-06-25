@@ -40,11 +40,12 @@
                 </Style>
             </Grid.Resources>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Style="{StaticResource closeBtnStyle}" Cursor="Hand" Click="ButtonBackClick" Content="«Приэльбрусье»" FontFamily="Comic Sans MS" FontSize="24" VerticalAlignment="Center" Foreground="White" FontWeight="Bold" Margin="10,0,0,0">
+            <Button Grid.Column="0" Style="{StaticResource closeBtnStyle}" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonBackClick" Content="«Приэльбрусье»" FontFamily="Comic Sans MS" FontSize="24" VerticalAlignment="Center" Foreground="White" FontWeight="Bold" Margin="10,0,0,0">
                 <Button.ToolTip>
                     <ToolTip>
                         Назад
@@ -72,8 +73,13 @@
             </Grid>
             <DockPanel Grid.Column="2">
                 <Label DockPanel.Dock="Top" Content="Текущий сеанс:" FontSize="14" FontFamily="Comic Sans MS" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock x:Name="timerTxt" Text="02:30:00" DockPanel.Dock="Bottom" FontSize="14" FontFamily="Comic Sans MS" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock x:Name="timerTxt" DockPanel.Dock="Bottom" FontSize="14" FontFamily="Comic Sans MS" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
             </DockPanel>
+            <Image x:Name="profileImage" Grid.Column="3" Width="40" Height="40" Margin="0,0,10,0" Stretch="Fill" StretchDirection="Both">
+                <Image.Clip>
+                    <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20" />
+                </Image.Clip>
+            </Image>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>

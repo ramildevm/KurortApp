@@ -20,9 +20,13 @@ namespace KurortApp
     /// </summary>
     public partial class AddOrderWindow : Window
     {
+        System.Windows.Threading.DispatcherTimer sessionTimer;
+        TimeSpan _time;
         public AddOrderWindow()
         {
             InitializeComponent();
+            profileImage.Source = new BitmapImage(new Uri("ResoursesFolder/" + SessionContext.CurrentUser.FIO.Split(' ')[0] + ".jpg", UriKind.Relative));
+            SetTimers();
             OrderContext.SetDefaults();
             using (var db = new KurortDBEntities())
             {
@@ -32,9 +36,30 @@ namespace KurortApp
                     txtId.Text = "1";
             }
         }
+        private void SetTimers()
+        {
+            _time = SessionContext.CurrentTime;
+            sessionTimer = new System.Windows.Threading.DispatcherTimer(new TimeSpan(0, 0, 1), System.Windows.Threading.DispatcherPriority.Normal, delegate
+            {
+                _time = SessionContext.CurrentTime;
+                timerTxt.Text = _time.ToString("c");
+                if (_time == TimeSpan.Zero)
+                {
+                    sessionTimer.Stop();
+                }
+            }, Application.Current.Dispatcher);
+            sessionTimer.Start();
+        }
         private void ButtonBackClick(object sender, RoutedEventArgs e)
         {
+            CloseWindow();
+        }
+
+        private void CloseWindow()
+        {
+            var smw = new SellerMainWindow();
             this.Close();
+            smw.ShowDialog();
         }
 
         private void ButtonGenerate_Click(object sender, RoutedEventArgs e)
@@ -91,7 +116,7 @@ namespace KurortApp
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            CloseWindow();
         }
 
         private void ButtonAddOrder_Click(object sender, RoutedEventArgs e)
@@ -122,7 +147,7 @@ namespace KurortApp
                     if (t > 0)
                         MessageBox.Show("Заказ оформлен");
                 }
-                this.Close();
+                CloseWindow();
             }
             else
             {

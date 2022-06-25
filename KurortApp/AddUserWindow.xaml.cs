@@ -22,6 +22,7 @@ namespace KurortApp
         public AddUserWindow()
         {
             InitializeComponent();
+            profileImage.Source = new BitmapImage(new Uri("ResoursesFolder/" + SessionContext.CurrentUser.FIO.Split(' ')[0] + ".jpg", UriKind.Relative));
             using (var db = new KurortDBEntities())
             {
                 if (db.Clients.Count() != 0)

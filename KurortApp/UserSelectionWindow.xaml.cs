@@ -22,6 +22,7 @@ namespace KurortApp
         public UserSelectionWindow()
         {
             InitializeComponent();
+            profileImage.Source = new BitmapImage(new Uri("ResoursesFolder/" + SessionContext.CurrentUser.FIO.Split(' ')[0] + ".jpg", UriKind.Relative));
             LoadUsers();
         }
         private void ButtonBackClick(object sender, RoutedEventArgs e)
@@ -51,7 +52,7 @@ namespace KurortApp
                     var address = new Label() { Content = "Адрес: " };
 
                     var sp2 = new StackPanel() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
-                    var addBtn = new Button() { Width = 100, Height = 30, Content = "Выбрать", Foreground = Brushes.White, Margin = new Thickness(0, 0, 10, 0), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Cursor = Cursors.Hand };
+                    var addBtn = new Button() { Width = 100, Height = 30, Content = "Выбрать", FontFamily = new FontFamily("Comic Sans MS"), FontWeight = FontWeights.Bold, Foreground = Brushes.Black, Margin = new Thickness(0, 0, 10, 0), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Cursor = Cursors.Hand };
                     addBtn.Style = (Style)contentPanel.Resources["RoundedButtonStyle"];
                     addBtn.Tag = user;
                     addBtn.Click += AddBtn_Click;
@@ -77,6 +78,7 @@ namespace KurortApp
                     mainBorder.Child = gridPanel;
                     contentPanel.Children.Add(mainBorder);
                 }
+                contentPanel.Children.Add(new Grid() { Height = 60 });
             }
         }
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
@@ -92,12 +94,12 @@ namespace KurortApp
 
         private void AddBtn_MouseLeave(object sender, MouseEventArgs e)
         {
-            (sender as Border).Background = new BrushConverter().ConvertFrom("#498C51") as Brush;
+            (sender as Border).Background = new BrushConverter().ConvertFrom("#76E383") as Brush;
         }
 
         private void AddBtn_MouseEnter(object sender, MouseEventArgs e)
         {
-            (sender as Border).Background = new BrushConverter().ConvertFrom("#5BAD65") as Brush;
+            (sender as Border).Background = new BrushConverter().ConvertFrom("#ABE4B2") as Brush;
         }
 
         private void ButtonAddUserClick(object sender, RoutedEventArgs e)
@@ -105,6 +107,8 @@ namespace KurortApp
             var auw = new AddUserWindow();
             this.Hide();
             auw.ShowDialog();
+            contentPanel.Children.Clear();
+            LoadUsers();
             this.ShowDialog();
         }
     }

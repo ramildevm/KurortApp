@@ -30,11 +30,11 @@ namespace KurortApp
             txtLogin.Text = "Ivanov@namecomp.ru";
             txtPassword.Password = "2L6KZG";
 
-            txtLogin.Text = "mironov@namecomp.ru";
-            txtPassword.Password = "YOyhfR";
+            //txtLogin.Text = "ignatov@namecomp.ru";
+            //txtPassword.Password = "rwVDh9";
 
-            //txtLogin.Text = "fedorov@namecomp.ru";
-            //txtPassword.Password = "8ntwUp";
+            txtLogin.Text = "fedorov@namecomp.ru";
+            txtPassword.Password = "8ntwUp";
 
             _time = TimeSpan.FromSeconds(120);
 
@@ -83,6 +83,16 @@ namespace KurortApp
             string result = LoginMethod(txtLogin.Text, txtPassword.Password);
             if (result == $"Добро пожаловать, {txtLogin.Text}!")
             {
+                SessionContext.CurrentTime = TimeSpan.FromMinutes(150);
+                App.sessionTimer.Start();
+                using (var db = new KurortDBEntities())
+                {
+                    Users user = (from u in db.Users where u.Login == txtLogin.Text select u).FirstOrDefault();
+                    user.LastEnter = DateTime.Now.ToString();
+                    user.Result = "Успешно";
+                    db.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
                 if (SessionContext.CurrentUser.Role == "Продавец" || SessionContext.CurrentUser.Role == "Старший смены")
                 {
                     var SellerWindow = new SellerMainWindow();
@@ -92,17 +102,31 @@ namespace KurortApp
                 }
                 else if (SessionContext.CurrentUser.Role == "Администратор")
                 {
-
+                    var AdminWindow = new AdminMainWindow();
+                    this.Hide();
+                    AdminWindow.ShowDialog();
+                    this.Show();
                 }
                 else
                 {
                     MessageBox.Show("Произошла ошибка с определением роли пользователя", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                txtLogin.Text = "";
-                txtPassword.Password = "";
+                //txtLogin.Text = "";
+                //txtPassword.Password = "";
             }
             else
             {
+                if(result == "Неверный пароль!")
+                {
+                    using(var db = new KurortDBEntities())
+                    {
+                        Users user = (from u in db.Users where u.Login == txtLogin.Text select u).FirstOrDefault();
+                        user.LastEnter = DateTime.Now.ToString();
+                        user.Result = "Неуспешно";
+                        db.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                }
                 SessionContext.Attempts++;
                 MessageBox.Show(result, "Результат", MessageBoxButton.OK, MessageBoxImage.Warning);
             }

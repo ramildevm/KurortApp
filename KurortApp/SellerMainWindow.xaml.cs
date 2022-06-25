@@ -25,8 +25,9 @@ namespace KurortApp
         public SellerMainWindow()
         {
             InitializeComponent();
-            addOrderWindow = new AddOrderWindow();
-            acceptEquipmentBtn.Visibility = (SessionContext.CurrentUser.Role == "Продавец") ? Visibility.Hidden : Visibility.Visible;
+            if(SessionContext.CurrentUser.Role == "Продавец")
+                acceptEquipmentBtn.Visibility = Visibility.Hidden;
+            profileImage.Source = new BitmapImage(new Uri("ResoursesFolder/"+SessionContext.CurrentUser.FIO.Split(' ')[0]+".jpg", UriKind.Relative));
             SetTimers();
             LoadOrders();
         }
@@ -38,15 +39,12 @@ namespace KurortApp
             {
                 _time = SessionContext.CurrentTime;
                 timerTxt.Text = _time.ToString("c");
-                addOrderWindow.timerTxt.Text = _time.ToString("c");
                 if (_time == TimeSpan.Zero)
                 {
                     sessionTimer.Stop();
                 }
             }, Application.Current.Dispatcher);
             sessionTimer.Start();
-            SessionContext.CurrentTime = TimeSpan.FromMinutes(150);
-            App.sessionTimer.Start();
         }
 
         private void LoadOrders(string substring = "")
@@ -133,16 +131,17 @@ namespace KurortApp
                     mainBorder.Child = gridPanel;
                     contentPanel.Children.Add(mainBorder);
                 }
+                contentPanel.Children.Add(new Grid() { Height = 60 });
             }
         }
 
         private void ButtonOrder_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
+            addOrderWindow = new AddOrderWindow();
+            this.Close();
             addOrderWindow.ShowDialog();
             contentPanel.Children.Clear();
             LoadOrders();
-            this.ShowDialog();
         }
         private void ButtonBackClick(object sender, RoutedEventArgs e)
         {
@@ -152,7 +151,9 @@ namespace KurortApp
 
         private void ButtonAcceptEquipment_Click(object sender, RoutedEventArgs e)
         {
-
+            var aow = new AcceptOrderWindow();
+            this.Close();
+            aow.ShowDialog();
         }
 
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)

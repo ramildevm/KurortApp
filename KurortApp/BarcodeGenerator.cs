@@ -77,6 +77,7 @@ namespace KurortApp
         }
         public Canvas MakeBarcode(string num, Canvas barcodeCan)
         {
+            num = num.Substring(num.Length - 13);
             barcodeCan.Children.RemoveRange(0, barcodeCan.Children.Count - 1);
             char[] nums = num.Replace(" ", "").Replace(",", "").ToArray<char>();
             List<string> numGroupNum = numGroup[Convert.ToInt32(nums[0]) - 48];
