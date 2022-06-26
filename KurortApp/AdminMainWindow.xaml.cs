@@ -22,6 +22,7 @@ namespace KurortApp
             profileImage.Source = new BitmapImage(new Uri("ResoursesFolder/" + SessionContext.CurrentUser.FIO.Split(' ')[0] + ".jpg", UriKind.Relative));
             SetTimers();
             LoadUsers();
+            contentPanel.Tag = "Пользователи";
         }
         private void SetTimers()
         {
@@ -89,64 +90,53 @@ namespace KurortApp
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
         {
             contentPanel.Children.Clear();
-            LoadUsers(searchTxt.Text);
+            if (contentPanel.Tag as string == "Пользователи")
+                LoadUsers(searchTxt.Text);
+            else
+                LoadOrders(searchTxt.Text);
         }
         private void ButtonMakeReportClick(object sender, RoutedEventArgs e)
-        {   
-            Document doc = new Document();
-            Spire.Doc.Section s = doc.AddSection();
-
-            String[] Header = { "Id", "Логин", "ФИО", "Роль", "Последний вход", "Результат входа" };
-            String[][] data;
-            using (var db = new KurortDBEntities())
+        {
+            String[] Header = null;
+            String[][] data = null;
+            string reportType = "";
+            if(contentPanel.Tag as string == "Пользователи")
             {
-                data = new string[db.Users.Count()][];
-                int i = 0;
-                foreach(var user in db.Users)
+                Header = new string[] { "Id", "Логин", "ФИО", "Роль", "Последний вход", "Результат входа" };
+                using (var db = new KurortDBEntities())
                 {
-                    data[i] = new string[]{user.Id.ToString(),user.Login,user.FIO,user.Role,user.LastEnter,user.Result};
-                    i++;
+                    data = new string[db.Users.Count()][];
+                    int i = 0;
+                    foreach (var user in db.Users)
+                    {
+                        data[i] = new string[] { user.Id.ToString(), user.Login, user.FIO, user.Role, user.LastEnter, user.Result };
+                        i++;
+                    }
                 }
+                reportType = "Отчёт по пользователям";
             }
-            Table table = s.AddTable(true);
-            table.ResetCells(data.Length + 1, Header.Length);
-            Spire.Doc.TableRow FRow = table.Rows[0];
-            FRow.IsHeader = true;
-            FRow.Height = 23;
-            FRow.RowFormat.BackColor = System.Drawing.Color.LightGray;
-            for (int i = 0; i < Header.Length; i++)
+            else
             {
-                Paragraph p = FRow.Cells[i].AddParagraph();
-                FRow.Cells[i].CellFormat.VerticalAlignment = Spire.Doc.Documents.VerticalAlignment.Middle;
-                p.Format.HorizontalAlignment = Spire.Doc.Documents.HorizontalAlignment.Center;
-                TextRange TR = p.AppendText(Header[i]);
-                TR.CharacterFormat.FontName = "Calibri";
-                TR.CharacterFormat.FontSize = 12;
-                TR.CharacterFormat.TextColor = System.Drawing.Color.White;
-                TR.CharacterFormat.Bold = true;
-            }
-            for (int r = 0; r < data.Length; r++)
-            {
-                TableRow DataRow = table.Rows[r + 1];
-                DataRow.Height = 15;
-                for (int c = 0; c < data[r].Length; c++)
+                Header = new string[] { "Id", "Код заказа", "Дата заказа", "Время заказа", "Id клиента", "Услуги","Статус","Дата закрытия","Время проката" };
+                using (var db = new KurortDBEntities())
                 {
-                    DataRow.Cells[c].CellFormat.VerticalAlignment = Spire.Doc.Documents.VerticalAlignment.Middle;
-                    Paragraph p2 = DataRow.Cells[c].AddParagraph();
-                    TextRange TR2 = p2.AppendText(data[r][c]);
-                    p2.Format.HorizontalAlignment = Spire.Doc.Documents.HorizontalAlignment.Center;
-                    TR2.CharacterFormat.FontName = "Calibri";
-                    TR2.CharacterFormat.FontSize = 10;
-                    TR2.CharacterFormat.TextColor = System.Drawing.Color.Black;
+                    data = new string[db.Orders.Count()][];
+                    int i = 0;
+                    foreach (var order in db.Orders)
+                    {
+                        data[i] = new string[] { order.Id.ToString(), order.Kod_zakaza, order.OrderDate.ToShortDateString(), order.OrderTime.ToString(), order.ClientId.ToString(), order.Services,  order.Status, order.CloseDate.ToString(), order.RentalTime };
+                        i++;
+                    }
                 }
+                reportType = "Отчёт по заказам";
             }
-            string fileName = @"Отчёт по пользователям/Отчёт от" + DateTime.Now.ToString().Replace(":","-");
-            string filePath = System.AppDomain.CurrentDomain.BaseDirectory + @"\ReportsFolder\" + fileName + ".docx";
-            doc.SaveToFile(filePath);
+            string filePath = ReportMaker.MakeReportMethod(Header, data, reportType);
             var result = MessageBox.Show("Отчёт создан и находится по пути \n" + filePath + "\nНахмите «Да» для открытия", "Результат", MessageBoxButton.YesNoCancel);
-            if(result==MessageBoxResult.Yes)
+            if (result == MessageBoxResult.Yes)
                 System.Diagnostics.Process.Start(filePath);
         }
+
+        
 
         private void ButtonBackClick(object sender, RoutedEventArgs e)
         {
@@ -158,6 +148,112 @@ namespace KurortApp
             var aew = new AdminEquipmentWindow();
             this.Close();
             aew.ShowDialog();
+        }
+
+        private void ButtonOrdersClick(object sender, RoutedEventArgs e)
+        {
+            if (contentPanel.Tag as string == "Пользователи")
+            {
+                (sender as Button).Content = "Список пользователей";
+                contentPanel.Tag = "Заказы";
+                contentPanel.Children.Clear();
+                LoadOrders();
+            }
+            else
+            {
+                (sender as Button).Content = "Список заказов";
+                contentPanel.Tag = "Пользователи";
+                contentPanel.Children.Clear();
+                LoadUsers();
+            }
+        }
+        private void LoadOrders(string substring = "")
+        {
+            IEnumerable<Orders> OrderList = null;
+            using (var db = new KurortDBEntities())
+            {
+                OrderList = (from d in db.Orders select d);
+                if (substring.Replace(" ", "") != "")
+                    OrderList = (from o in OrderList
+                                 where o.Kod_zakaza.Contains($"{substring}")
+                                 select o);
+                foreach (var order in OrderList)
+                {
+                    var mainBorder = new Border();
+                    var gridPanel = new Grid();
+                    gridPanel.ColumnDefinitions.Add(new ColumnDefinition());
+                    gridPanel.ColumnDefinitions.Add(new ColumnDefinition());
+                    gridPanel.ColumnDefinitions.Add(new ColumnDefinition());
+                    var sp1 = new StackPanel() { Orientation = Orientation.Vertical };
+                    var orderId = new Label() { Content = "Идентификатор: " };
+                    var orderNum = new Label() { Content = "Код заказа: " };
+                    var date = new Label() { Content = "Дата заказа: " };
+                    var time = new Label() { Content = "Время заказа: " };
+
+
+                    var sp1_5 = new StackPanel() { Orientation = Orientation.Vertical };
+                    var services = new Label() {Content = "Услуги:", HorizontalAlignment = System.Windows.HorizontalAlignment.Right };
+                    var servicesText = new TextBlock() { Text = "" };
+
+                    var sp2 = new StackPanel() { Orientation = Orientation.Vertical };
+                    var status = new Label() { Content = "Статус заказа: ", HorizontalContentAlignment = System.Windows.HorizontalAlignment.Right };
+                    var closeDate = new Label() { Content = "Дата закрытия: ", HorizontalContentAlignment = System.Windows.HorizontalAlignment.Right };
+                    var rentalTime = new Label() { Content = "Время проката: ", HorizontalContentAlignment = System.Windows.HorizontalAlignment.Right };
+                    var price = new Label() { Content = "Цена: ", HorizontalContentAlignment = System.Windows.HorizontalAlignment.Right };
+
+                    //наполнение
+                    var serviceSet = order.Services.Split(new string[] { "," }, StringSplitOptions.None);
+                    int priceText = 0;
+
+                    orderId.Content += order.Id.ToString();
+                    orderNum.Content += order.Kod_zakaza;
+                    date.Content += order.OrderDate.ToShortDateString();
+                    time.Content += order.OrderTime.ToString();
+                    foreach (var ser in serviceSet)
+                    {
+                        int serID = Convert.ToInt32(ser);
+                        try
+                        {
+                            var service = (from s in db.Services where s.Id == serID select s).FirstOrDefault();
+                            if (service is null)
+                                continue;
+                            priceText += service.Price;
+                            servicesText.Text += ((servicesText.Text == "") ? "" : ",\n") + service.Name;
+                        }
+                        catch { }
+                    }
+                    servicesText.FontFamily = new System.Windows.Media.FontFamily("Comic Sans MS");
+                    status.Content += order.Status;
+                    closeDate.Content += (order.CloseDate == null) ? "Нет данных" : ((DateTime)order.CloseDate).ToShortDateString();
+                    rentalTime.Content += order.RentalTime;
+
+
+                    price.Content += priceText.ToString();
+                    //добавление
+                    Grid.SetColumn(sp1, 0);
+                    Grid.SetColumn(sp1_5, 1);
+                    Grid.SetColumn(sp2, 2);
+                    sp1.Children.Add(orderId);
+                    sp1.Children.Add(orderNum);
+                    sp1.Children.Add(date);
+                    sp1.Children.Add(time);
+                    gridPanel.Children.Add(sp1);
+
+                    sp1_5.Children.Add(services);
+                    sp1_5.Children.Add(servicesText);
+                    gridPanel.Children.Add(sp1_5);
+
+                    sp2.Children.Add(status);
+                    sp2.Children.Add(closeDate);
+                    sp2.Children.Add(rentalTime);
+                    sp2.Children.Add(price);
+                    gridPanel.Children.Add(sp2);
+
+                    mainBorder.Child = gridPanel;
+                    contentPanel.Children.Add(mainBorder);
+                }
+                contentPanel.Children.Add(new Grid() { Height = 60 });
+            }
         }
     }
 }

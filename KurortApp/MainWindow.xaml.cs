@@ -111,8 +111,8 @@ namespace KurortApp
                 {
                     MessageBox.Show("Произошла ошибка с определением роли пользователя", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                //txtLogin.Text = "";
-                //txtPassword.Password = "";
+                txtLogin.Text = "";
+                txtPassword.Password = "";
             }
             else
             {

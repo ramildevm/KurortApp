@@ -37,12 +37,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aspose.Words, Version=22.6.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
-      <HintPath>..\packages\Aspose.Words.22.6.0\lib\net461\Aspose.Words.dll</HintPath>
-    </Reference>
-    <Reference Include="Aspose.Words.Pdf2Word, Version=22.6.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
-      <HintPath>..\packages\Aspose.Words.22.6.0\lib\net461\Aspose.Words.Pdf2Word.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -53,11 +47,14 @@
       <HintPath>..\packages\GroupDocs.Conversion.22.5.0\lib\net35\GroupDocs.Conversion.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Spire.Doc, Version=10.6.6.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
-      <HintPath>..\packages\Spire.Doc.10.6.6\lib\net40\Spire.Doc.dll</HintPath>
+    <Reference Include="Spire.Doc, Version=10.2.5.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.Doc.10.2.0\lib\net40\Spire.Doc.dll</HintPath>
     </Reference>
-    <Reference Include="Spire.Pdf, Version=8.6.0.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
-      <HintPath>..\packages\Spire.Doc.10.6.6\lib\net40\Spire.Pdf.dll</HintPath>
+    <Reference Include="Spire.License, Version=1.4.0.40, Culture=neutral, PublicKeyToken=b1144360237c8b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.Doc.10.2.0\lib\net40\Spire.License.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Pdf, Version=8.2.2.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.Doc.10.2.0\lib\net40\Spire.Pdf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -117,11 +114,11 @@
     <Compile Include="AdminMainWindow.xaml.cs">
       <DependentUpon>AdminMainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BarcodeGenerator.cs" />
+    <Compile Include="Classes\BarcodeGenerator.cs" />
     <Compile Include="Barcodes.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="BarcodeToPDF.cs" />
+    <Compile Include="Classes\BarcodeToPDF.cs" />
     <Compile Include="CaptchaWindow.xaml.cs">
       <DependentUpon>CaptchaWindow.xaml</DependentUpon>
     </Compile>
@@ -146,10 +143,11 @@
     <Compile Include="Goods.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="OrderContext.cs" />
+    <Compile Include="ContextFolder\OrderContext.cs" />
     <Compile Include="Orders.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Classes\ReportMaker.cs" />
     <Compile Include="SellerMainWindow.xaml.cs">
       <DependentUpon>SellerMainWindow.xaml</DependentUpon>
     </Compile>
@@ -162,7 +160,7 @@
     <Compile Include="ServiceSelectionWindow.xaml.cs">
       <DependentUpon>ServiceSelectionWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SessionContext.cs" />
+    <Compile Include="ContextFolder\SessionContext.cs" />
     <Compile Include="Users.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>
@@ -271,7 +269,6 @@
     <Resource Include="ResoursesFolder\Федоров.jpg" />
     <Resource Include="ResoursesFolder\Хохлов.jpg" />
     <Resource Include="ResoursesFolder\Ширяев.jpg" />
-    <Resource Include="Смирнова.jpeg" />
     <Resource Include="ResoursesFolder\Игнатов.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -286,6 +283,7 @@
       <LastGenOutput>EntityModel.cs</LastGenOutput>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\GroupDocs.Conversion.22.5.0\build\net35\GroupDocs.Conversion.targets" Condition="Exists('..\packages\GroupDocs.Conversion.22.5.0\build\net35\GroupDocs.Conversion.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
