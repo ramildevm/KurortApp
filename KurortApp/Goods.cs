@@ -12,18 +12,18 @@ namespace KurortApp
     using System;
     using System.Collections.Generic;
     
-    public partial class Services
+    public partial class Goods
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Services()
+        public Goods()
         {
             this.ServiceGoods = new HashSet<ServiceGoods>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Kod_uslugi { get; set; }
-        public int Price { get; set; }
+        public int Quantity { get; set; }
+        public int InPrentCount { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ServiceGoods> ServiceGoods { get; set; }

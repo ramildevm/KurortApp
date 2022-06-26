@@ -90,8 +90,27 @@ namespace KurortApp
         {
             var service = ((sender as Button).Tag as Services);
             int serviceId = service.Id;
+            using(var db = new KurortDBEntities())
+            {
+                var goods = (from sg in db.ServiceGoods
+                             where sg.ServiceId == service.Id
+                             select sg.Goods).FirstOrDefault();
+                if (!(goods is null))
+                {
+                    if (goods.InPrentCount < goods.Quantity)
+                        goods.InPrentCount++;
+                    else
+                    {
+                        MessageBox.Show("К сожалению на данный момент не доступного оборудования для предоставления данной услуги");
+                        (sender as Button).IsEnabled = false;
+                        return;
+                    }
+                    db.Entry(goods).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
+            }
             if (OrderContext.ServicesSet.Where(x=>x.Id == serviceId).FirstOrDefault()==null)
-                OrderContext.ServicesSet.Add((sender as Button).Tag as Services);
+                OrderContext.ServicesSet.Add(service);
             (sender as Button).Content = "Добавлено";
             (sender as Button).IsEnabled = false;
             

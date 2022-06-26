@@ -85,6 +85,19 @@ namespace KurortApp
                     }
                     order.CloseDate = DateTime.Now.Date;
                     order.Status = "Закрыто";
+
+                    foreach (var s in order.Services.Split(new string[] {","}, StringSplitOptions.None))
+                    {
+                        int sId = Convert.ToInt32(s);
+                        var goods = (from sg in db.ServiceGoods
+                                     where sg.ServiceId == sId
+                                     select sg.Goods).FirstOrDefault();
+                        if (goods is null)
+                            continue;
+                        if(goods.InPrentCount>0) 
+                            goods.InPrentCount--;
+                        db.Entry(goods).State = System.Data.Entity.EntityState.Modified;
+                    }
                 }
                 else
                 {

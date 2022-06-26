@@ -4,15 +4,19 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4dc65e1c2a124e4aabb8a3a563c3b35b" Name="Diagram1">
+      <Diagram DiagramId="667f3d1f84324211b0ea9b66d306b583" Name="Diagram1">
         <EntityTypeShape EntityType="KurortDBModel.Barcodes" Width="1.5" PointX="5.25" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="KurortDBModel.Clients" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="KurortDBModel.Goods" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="KurortDBModel.Orders" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
-        <EntityTypeShape EntityType="KurortDBModel.Services" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="KurortDBModel.ServiceGoods" Width="1.5" PointX="8" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="KurortDBModel.Services" Width="1.5" PointX="5.75" PointY="7.875" IsExpanded="true" />
         <EntityTypeShape EntityType="KurortDBModel.Users" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
         <AssociationConnector Association="KurortDBModel.FK_Barcodes_Orders" ManuallyRouted="false" />
         <AssociationConnector Association="KurortDBModel.FK_Clients_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="KurortDBModel.FK_ServiceGoods_Goods" ManuallyRouted="false" />
         <AssociationConnector Association="KurortDBModel.FK_Orders_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="KurortDBModel.FK_ServiceGoods_Services" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

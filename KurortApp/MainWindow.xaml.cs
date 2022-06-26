@@ -30,8 +30,8 @@ namespace KurortApp
             txtLogin.Text = "Ivanov@namecomp.ru";
             txtPassword.Password = "2L6KZG";
 
-            //txtLogin.Text = "ignatov@namecomp.ru";
-            //txtPassword.Password = "rwVDh9";
+            txtLogin.Text = "ignatov@namecomp.ru";
+            txtPassword.Password = "rwVDh9";
 
             txtLogin.Text = "fedorov@namecomp.ru";
             txtPassword.Password = "8ntwUp";
